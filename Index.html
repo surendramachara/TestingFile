@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Google Sheet Database Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #msg {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Submit Data</h2>
+    
+    <input type="text" id="name" placeholder="Enter Name" required>
+    <input type="email" id="email" placeholder="Enter Email" required>
+    
+    <button onclick="submitData()">Submit</button>
+    
+    <div id="msg"></div>
+</div>
+
+<script>
+    const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
+
+    function submitData() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let msg = document.getElementById("msg");
+
+        if(name === "" || email === "") {
+            msg.innerHTML = "Please fill all fields";
+            msg.style.color = "red";
+            return;
+        }
+
+        fetch(scriptURL, {
+            method: "POST",
+            body: JSON.stringify({ name: name, email: email }),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(response => response.text())
+        .then(data => {
+            msg.innerHTML = "Data submitted successfully!";
+            msg.style.color = "green";
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+        })
+        .catch(error => {
+            msg.innerHTML = "Error submitting data";
+            msg.style.color = "red";
+        });
+    }
+</script>
+
+</body>
+</html>
